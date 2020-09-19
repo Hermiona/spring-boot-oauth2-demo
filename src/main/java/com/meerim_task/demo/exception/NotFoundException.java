@@ -1,4 +1,4 @@
-package com.meerim_task.demo.exceptions;
+package com.meerim_task.demo.exception;
 
 public class NotFoundException extends Exception {
     public NotFoundException(Class objectType, String attributeType, Object attribute) {
