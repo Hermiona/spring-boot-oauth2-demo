@@ -9,10 +9,11 @@ import lombok.Value;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
+@Value
 public class CreatePaymentTransactionRequest {
-    private final UserBalance userBalance;
-    private final ServiceProvider serviceProvider;
-    private final Integer amount;
-    private final LocalDateTime transactionTimestamp;
-    private StatusType statusType = StatusType.PENDING;
+    UserBalance userBalance;
+    ServiceProvider serviceProvider;
+    Integer amount;
+    LocalDateTime transactionTimestamp;
+    StatusType statusType = StatusType.PENDING;
 }
