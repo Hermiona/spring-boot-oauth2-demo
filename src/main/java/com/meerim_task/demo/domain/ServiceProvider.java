@@ -9,12 +9,12 @@ import javax.persistence.*;
 @Table(name = "service_providers")
 public class ServiceProvider {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name="account_details", nullable = false)
+    @Column(name = "account_details", unique = true, nullable = false)
     private String accountDetails;
 }

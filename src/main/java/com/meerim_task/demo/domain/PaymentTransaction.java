@@ -1,16 +1,20 @@
 package com.meerim_task.demo.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "payment_transactions")
 public class PaymentTransaction {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -32,8 +36,3 @@ public class PaymentTransaction {
     private StatusType status;
 }
 
-enum StatusType{
-    PENDING,
-    CANCELED,
-    COMPLETED
-}
