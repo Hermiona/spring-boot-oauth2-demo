@@ -1,4 +1,4 @@
-package com.meerim_task.demo.mapper.pageResponseDtoBuilder;
+package com.meerim_task.demo.facade.dto.pageResponseDtoBuilder;
 
 import com.meerim_task.demo.facade.dto.PageInfoDto;
 import com.meerim_task.demo.facade.dto.PageResponseDto;
