@@ -4,15 +4,15 @@ import com.meerim_task.demo.domain.UserBalance;
 import com.meerim_task.demo.exception.NotFoundException;
 import com.meerim_task.demo.repository.UserBalanceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
 
 public interface UserBalanceService {
     UserBalance findById(Long id) throws NotFoundException;
 
-    Page<UserBalance> search(Pageable p);
+    Collection<UserBalance> search();
 }
 
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ class DefaultUserBalanceService implements UserBalanceService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<UserBalance> search(Pageable p) {
-        return userBalanceRepository.findAll(p);
+    public Collection<UserBalance> search() {
+        return userBalanceRepository.findAll();
     }
 }

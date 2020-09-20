@@ -17,6 +17,7 @@ import com.meerim_task.demo.service.ServiceProviderService;
 import com.meerim_task.demo.service.UserBalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.function.Supplier;
@@ -38,6 +39,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
     private final PaymentTransactionMapper paymentTransactionMapper;
     private final Supplier<LocalDateTime> currentDateTimeProvider = LocalDateTime::now;
 
+    @Transactional
     @Override
     public PaymentTransactionDto create(CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException {
         UserBalance userBalance = userBalanceService.findById(dtoRequest.getUserBalanceId());
@@ -47,6 +49,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
     }
 
+    @Transactional
     @Override
     public PaymentTransactionDto cancel(CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException {
         UserBalance userBalance = userBalanceService.findById(dtoRequest.getUserBalanceId());
@@ -56,6 +59,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
     }
 
+    @Transactional
     @Override
     public PaymentTransactionDto complete(CompletePaymentTransactionRequestDto dtoRequest) throws NotFoundException {
         UserBalance userBalance = userBalanceService.findById(dtoRequest.getUserBalanceId());
