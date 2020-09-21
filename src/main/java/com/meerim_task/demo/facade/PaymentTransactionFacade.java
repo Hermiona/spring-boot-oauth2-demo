@@ -1,71 +1,73 @@
 package com.meerim_task.demo.facade;
 
-import com.meerim_task.demo.domain.PaymentTransaction;
-import com.meerim_task.demo.domain.ServiceProvider;
-import com.meerim_task.demo.domain.UserBalance;
-import com.meerim_task.demo.domain.request.CancelPaymentTransactionRequest;
+import com.meerim_task.demo.domain.*;
 import com.meerim_task.demo.domain.request.CompletePaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.CreatePaymentTransactionRequest;
+import com.meerim_task.demo.domain.request.FindPaymentTransactionRequest;
+import com.meerim_task.demo.exception.ConflictException;
 import com.meerim_task.demo.exception.NotFoundException;
 import com.meerim_task.demo.facade.dto.CancelPaymentTransactionRequestDto;
-import com.meerim_task.demo.facade.dto.CompletePaymentTransactionRequestDto;
 import com.meerim_task.demo.facade.dto.CreatePaymentTransactionRequestDto;
 import com.meerim_task.demo.facade.dto.PaymentTransactionDto;
 import com.meerim_task.demo.mapper.PaymentTransactionMapper;
-import com.meerim_task.demo.service.PaymentTransactionService;
-import com.meerim_task.demo.service.ServiceProviderService;
-import com.meerim_task.demo.service.UserBalanceService;
+import com.meerim_task.demo.property.PaymentTransactionProperty;
+import com.meerim_task.demo.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.function.Supplier;
+import java.util.Collection;
 
 public interface PaymentTransactionFacade {
-    PaymentTransactionDto create(CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException;
+    PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException;
 
-    PaymentTransactionDto cancel(CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException;
+    PaymentTransactionDto cancel(Long userId, Long parentId, CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException;
 
-    PaymentTransactionDto complete(CompletePaymentTransactionRequestDto dtoRequest) throws NotFoundException;
 }
 
 @RequiredArgsConstructor
 @Service
 class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
+    private final UserService userService;
     private final PaymentTransactionService paymentTransactionService;
     private final UserBalanceService userBalanceService;
     private final ServiceProviderService serviceProviderService;
     private final PaymentTransactionMapper paymentTransactionMapper;
-    private final Supplier<LocalDateTime> currentDateTimeProvider = LocalDateTime::now;
+    private final CancelPaymentTransactionService cancelPaymentTransactionService;
+    private final PaymentTransactionProperty paymentTransactionProperty;
 
     @Transactional
     @Override
-    public PaymentTransactionDto create(CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException {
-        UserBalance userBalance = userBalanceService.findById(dtoRequest.getUserBalanceId());
+    public PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException {
+        User user = userService.findById(userId);
+        UserBalance userBalance = userBalanceService.findByIdAndUser(dtoRequest.getUserBalanceId(), user);
         ServiceProvider serviceProvider = serviceProviderService.findById(dtoRequest.getServiceProviderId());
-        LocalDateTime transactionTimestamp = currentDateTimeProvider.get();
-        PaymentTransaction paymentTransaction = paymentTransactionService.create(new CreatePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount(), transactionTimestamp));
+        PaymentTransaction paymentTransaction = paymentTransactionService.create(new CreatePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount()));
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
     }
 
     @Transactional
     @Override
-    public PaymentTransactionDto cancel(CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException {
-        UserBalance userBalance = userBalanceService.findById(dtoRequest.getUserBalanceId());
+    public PaymentTransactionDto cancel(Long userId, Long parentId, CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException {
+        User user = userService.findById(userId);
+        UserBalance userBalance = userBalanceService.findByIdAndUser(dtoRequest.getUserBalanceId(), user);
         ServiceProvider serviceProvider = serviceProviderService.findById(dtoRequest.getServiceProviderId());
-        LocalDateTime transactionTimestamp = currentDateTimeProvider.get();
-        PaymentTransaction paymentTransaction = paymentTransactionService.cancel(new CancelPaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount(), transactionTimestamp));
-        return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
+        PaymentTransaction paymentTransaction = paymentTransactionService.find(new FindPaymentTransactionRequest(
+                parentId,
+                userBalance,
+                serviceProvider,
+                StatusType.PENDING
+        ));
+        PaymentTransaction canceledPaymentTransaction = cancelPaymentTransactionService.execute(paymentTransaction);
+        return paymentTransactionMapper.toPaymentTransactionDto(canceledPaymentTransaction);
     }
 
+    @Scheduled(cron = "${payment_transaction.cron}")
     @Transactional
-    @Override
-    public PaymentTransactionDto complete(CompletePaymentTransactionRequestDto dtoRequest) throws NotFoundException {
-        UserBalance userBalance = userBalanceService.findById(dtoRequest.getUserBalanceId());
-        ServiceProvider serviceProvider = serviceProviderService.findById(dtoRequest.getServiceProviderId());
-        LocalDateTime transactionTimestamp = currentDateTimeProvider.get();
-        PaymentTransaction paymentTransaction = paymentTransactionService.complete(new CompletePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount(), transactionTimestamp));
-        return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
+    public void completeTransactions() {
+        Collection<PaymentTransaction> paymentTransactions = paymentTransactionService.getToBeCompletedTransactions(paymentTransactionProperty.completeTime);
+        paymentTransactions.stream().forEach(
+                paymentTransaction -> paymentTransactionService.complete(new CompletePaymentTransactionRequest(paymentTransaction)));
     }
 }
