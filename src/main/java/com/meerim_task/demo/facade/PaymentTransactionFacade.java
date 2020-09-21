@@ -63,10 +63,10 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
         return paymentTransactionMapper.toPaymentTransactionDto(canceledPaymentTransaction);
     }
 
-    @Scheduled(cron = "${payment_transaction.cron}")
+    @Scheduled(cron = "${payment-transaction.cron}")
     @Transactional
     public void completeTransactions() {
-        Collection<PaymentTransaction> paymentTransactions = paymentTransactionService.getToBeCompletedTransactions(paymentTransactionProperty.completeTime);
+        Collection<PaymentTransaction> paymentTransactions = paymentTransactionService.getToBeCompletedTransactions(paymentTransactionProperty.getCompleteTime());
         paymentTransactions.stream().forEach(
                 paymentTransaction -> paymentTransactionService.complete(new CompletePaymentTransactionRequest(paymentTransaction)));
     }

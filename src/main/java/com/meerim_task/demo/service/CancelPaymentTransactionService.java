@@ -26,7 +26,7 @@ class DefaultCancelPaymentTransactionService implements CancelPaymentTransaction
     public PaymentTransaction execute(PaymentTransaction paymentTransaction) throws ConflictException {
         LocalDateTime currentDateTime = currentDateTimeProvider.get();
         Duration duration = Duration.between(currentDateTime, paymentTransaction.getTransactionTimestamp());
-        if (duration.compareTo(paymentTransactionProperty.completeTime) >= 0) {
+        if (duration.compareTo(paymentTransactionProperty.getCompleteTime()) >= 0) {
             throw new ConflictException("Payment transaction cannot be canceled. The available cancel time has expired");
         }
         return paymentTransactionService.cancel(new CancelPaymentTransactionRequest(paymentTransaction));

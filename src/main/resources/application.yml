@@ -10,6 +10,6 @@ spring:
     enabled: true
     baseline-on-migrate: true
     out-of-order: true
-payment_transaction:
-  complete_time: 1h
+payment-transaction:
+  complete-time: 1H
   cron: 0 */2 * ? * *
