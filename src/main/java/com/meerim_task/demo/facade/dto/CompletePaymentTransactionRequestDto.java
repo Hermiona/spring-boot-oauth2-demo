@@ -8,5 +8,5 @@ import lombok.Value;
 public class CompletePaymentTransactionRequestDto {
     Long userBalanceId;
     Long serviceProviderId;
-    Integer amount;
+    Long parentId;
 }

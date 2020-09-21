@@ -8,9 +8,9 @@ import lombok.Value;
 
 @RequiredArgsConstructor
 @Value
-public class CreatePaymentTransactionRequest {
+public class FindPaymentTransactionRequest {
+    Long id;
     UserBalance userBalance;
     ServiceProvider serviceProvider;
-    Integer amount;
-    StatusType statusType = StatusType.PENDING;
+    StatusType statusType;
 }

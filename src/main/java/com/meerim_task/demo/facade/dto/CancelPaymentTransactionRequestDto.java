@@ -8,5 +8,4 @@ import lombok.Value;
 public class CancelPaymentTransactionRequestDto {
     Long userBalanceId;
     Long serviceProviderId;
-    Integer amount;
 }
