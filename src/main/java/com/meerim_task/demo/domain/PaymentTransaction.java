@@ -34,5 +34,9 @@ public class PaymentTransaction {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusType status;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id", nullable = true, updatable = false)
+    private PaymentTransaction parent;
 }
 
