@@ -23,6 +23,4 @@ public class User {
     @Column(name = "fullname", nullable = false)
     private String fullname;
 
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
-    private Set<UserBalance> balances = new HashSet();
 }
