@@ -24,7 +24,7 @@ public interface PaymentTransactionRepository extends JpaRepository<PaymentTrans
             "where pt.status = :status and pt.transactionTimestamp <= :timestamp " +
             "and not exists (select 1 from PaymentTransaction pt2 where " +
             "pt2.parent = pt)")
-    Collection<PaymentTransaction> findToBeCompleted(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
+    Collection<PaymentTransaction> findByStatusAndTimestampBeforeAndNotExistsChildren(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
 
     Collection<PaymentTransaction> findByParentAndStatusIn(PaymentTransaction parent, Set<StatusType> statuses);
 }

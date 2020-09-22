@@ -80,7 +80,7 @@ class DefaultPaymentTransactionService implements PaymentTransactionService {
     @Override
     public Collection<PaymentTransaction> getToBeCompletedTransactions(Duration duration) {
         LocalDateTime pendingTransactionsLatestTime = currentDateTimeProvider.get().minus(duration);
-        return paymentTransactionRepository.findToBeCompleted(StatusType.PENDING, pendingTransactionsLatestTime);
+        return paymentTransactionRepository.findByStatusAndTimestampBeforeAndNotExistsChildren(StatusType.PENDING, pendingTransactionsLatestTime);
     }
 
     @Override
