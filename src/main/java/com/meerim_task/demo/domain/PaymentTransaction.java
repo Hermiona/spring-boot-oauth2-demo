@@ -38,5 +38,9 @@ public class PaymentTransaction {
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true, updatable = false)
     private PaymentTransaction parent;
+
+    public boolean canBeCanceled(){
+        return this.status == StatusType.PENDING;
+    }
 }
 
