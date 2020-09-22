@@ -5,3 +5,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/testdemo
     username: postgres
     password: 123
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
