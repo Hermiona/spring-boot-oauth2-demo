@@ -12,7 +12,7 @@ public class NotFoundException extends Exception {
     }
 
     private static String buildMessage(Pair<String, Object>... typeValues){
-        return Arrays.stream(typeValues).map(item -> "%1$s: %2$s".formatted(item.getFirst(), item.getSecond())).collect(Collectors.joining(", "));
+        return Arrays.stream(typeValues).map(item -> "%1$s: %2$s".formatted(item.getFirst(), item.getSecond().toString())).collect(Collectors.joining(", "));
     }
 }
 

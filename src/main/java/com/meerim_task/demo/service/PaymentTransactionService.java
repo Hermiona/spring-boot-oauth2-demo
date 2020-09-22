@@ -68,8 +68,8 @@ class DefaultPaymentTransactionService implements PaymentTransactionService {
                 request.getStatusType()
         ).orElseThrow(() -> new NotFoundException(PaymentTransaction.class,
                 Pair.of("id", request.getId()),
-                Pair.of("userBalance", request.getUserBalance()),
-                Pair.of("serviceProvider", request.getServiceProvider()),
+                Pair.of("userBalance", request.getUserBalance().getBalance()),
+                Pair.of("serviceProvider", request.getServiceProvider().getId()),
                 Pair.of("status", request.getStatusType())
         ));
     }
