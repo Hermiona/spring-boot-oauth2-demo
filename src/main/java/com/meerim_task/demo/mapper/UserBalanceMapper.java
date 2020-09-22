@@ -1,7 +1,7 @@
 package com.meerim_task.demo.mapper;
 
 import com.meerim_task.demo.domain.UserBalance;
-import com.meerim_task.demo.facade.dto.UserBalanceSimplifiedDto;
+import com.meerim_task.demo.controller.dto.UserBalanceSimplifiedDto;
 import org.springframework.stereotype.Service;
 
 public interface UserBalanceMapper {

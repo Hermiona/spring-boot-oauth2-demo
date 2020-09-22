@@ -1,9 +1,9 @@
 package com.meerim_task.demo.mapper;
 
 import com.meerim_task.demo.domain.PaymentTransaction;
-import com.meerim_task.demo.facade.dto.PaymentTransactionDto;
-import com.meerim_task.demo.facade.dto.ServiceProviderDto;
-import com.meerim_task.demo.facade.dto.UserBalanceSimplifiedDto;
+import com.meerim_task.demo.controller.dto.PaymentTransactionDto;
+import com.meerim_task.demo.controller.dto.ServiceProviderDto;
+import com.meerim_task.demo.controller.dto.UserBalanceSimplifiedDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

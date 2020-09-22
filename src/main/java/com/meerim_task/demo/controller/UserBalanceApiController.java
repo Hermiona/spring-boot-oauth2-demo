@@ -1,8 +1,8 @@
 package com.meerim_task.demo.controller;
 
 import com.meerim_task.demo.facade.UserBalanceFacade;
-import com.meerim_task.demo.facade.dto.PageResponseDto;
-import com.meerim_task.demo.facade.dto.UserBalanceSimplifiedDto;
+import com.meerim_task.demo.controller.dto.PageResponseDto;
+import com.meerim_task.demo.controller.dto.UserBalanceSimplifiedDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

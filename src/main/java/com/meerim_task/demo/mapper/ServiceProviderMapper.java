@@ -1,7 +1,7 @@
 package com.meerim_task.demo.mapper;
 
 import com.meerim_task.demo.domain.ServiceProvider;
-import com.meerim_task.demo.facade.dto.ServiceProviderDto;
+import com.meerim_task.demo.controller.dto.ServiceProviderDto;
 import org.springframework.stereotype.Service;
 
 public interface ServiceProviderMapper {

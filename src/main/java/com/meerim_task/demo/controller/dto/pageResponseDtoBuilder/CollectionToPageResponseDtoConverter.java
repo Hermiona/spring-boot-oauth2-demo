@@ -1,7 +1,7 @@
-package com.meerim_task.demo.facade.dto.pageResponseDtoBuilder;
+package com.meerim_task.demo.controller.dto.pageResponseDtoBuilder;
 
-import com.meerim_task.demo.facade.dto.PageInfoDto;
-import com.meerim_task.demo.facade.dto.PageResponseDto;
+import com.meerim_task.demo.controller.dto.PageInfoDto;
+import com.meerim_task.demo.controller.dto.PageResponseDto;
 
 import java.util.Collection;
 import java.util.function.Function;

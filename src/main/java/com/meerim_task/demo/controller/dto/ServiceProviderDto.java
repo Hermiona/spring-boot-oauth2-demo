@@ -1,4 +1,4 @@
-package com.meerim_task.demo.facade.dto;
+package com.meerim_task.demo.controller.dto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

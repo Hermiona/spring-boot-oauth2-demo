@@ -1,12 +1,11 @@
-package com.meerim_task.demo.facade.dto;
+package com.meerim_task.demo.controller.dto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @RequiredArgsConstructor
 @Value
-public class UserDto {
+public class UserBalanceSimplifiedDto {
     Long id;
-    String username;
-    String fullname;
+    Integer balance;
 }

@@ -1,11 +1,11 @@
 package com.meerim_task.demo.facade;
 
 import com.meerim_task.demo.domain.UserBalance;
-import com.meerim_task.demo.facade.dto.PageResponseDto;
-import com.meerim_task.demo.facade.dto.UserBalanceSimplifiedDto;
+import com.meerim_task.demo.controller.dto.PageResponseDto;
+import com.meerim_task.demo.controller.dto.UserBalanceSimplifiedDto;
 import com.meerim_task.demo.mapper.UserBalanceMapper;
-import com.meerim_task.demo.facade.dto.pageResponseDtoBuilder.CollectionToPageResponseDtoConverter;
-import com.meerim_task.demo.facade.dto.pageResponseDtoBuilder.PageResponseDtoBuilder;
+import com.meerim_task.demo.controller.dto.pageResponseDtoBuilder.CollectionToPageResponseDtoConverter;
+import com.meerim_task.demo.controller.dto.pageResponseDtoBuilder.PageResponseDtoBuilder;
 import com.meerim_task.demo.service.UserBalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
