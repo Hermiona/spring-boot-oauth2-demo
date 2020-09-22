@@ -2,6 +2,7 @@ package com.meerim_task.demo.service;
 
 import com.meerim_task.demo.domain.User;
 import com.meerim_task.demo.domain.UserBalance;
+import com.meerim_task.demo.exception.ConflictException;
 import com.meerim_task.demo.exception.NotFoundException;
 import com.meerim_task.demo.repository.UserBalanceRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ public interface UserBalanceService {
     UserBalance findByIdAndUser(Long id, User user) throws NotFoundException;
 
     Collection<UserBalance> search();
+
+    UserBalance withdraw(UserBalance userBalance, Integer amount) throws ConflictException;
+
+    UserBalance deposit(UserBalance userBalance, Integer amount);
 }
 
 @RequiredArgsConstructor
@@ -27,7 +32,7 @@ class DefaultUserBalanceService implements UserBalanceService {
     @Transactional(readOnly = true)
     @Override
     public UserBalance findById(Long id) throws NotFoundException {
-        return userBalanceRepository.findById(id).orElseThrow(() -> new NotFoundException(UserBalance.class, Pair.of("id" , id)));
+        return userBalanceRepository.findById(id).orElseThrow(() -> new NotFoundException(UserBalance.class, Pair.of("id", id)));
     }
 
     @Transactional(readOnly = true)
@@ -40,5 +45,19 @@ class DefaultUserBalanceService implements UserBalanceService {
     @Override
     public Collection<UserBalance> search() {
         return userBalanceRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public UserBalance withdraw(UserBalance userBalance, Integer amount) throws ConflictException {
+        userBalance.withdraw(amount);
+        return userBalanceRepository.save(userBalance);
+    }
+
+    @Transactional
+    @Override
+    public UserBalance deposit(UserBalance userBalance, Integer amount) {
+        userBalance.deposit(amount);
+        return userBalanceRepository.save(userBalance);
     }
 }

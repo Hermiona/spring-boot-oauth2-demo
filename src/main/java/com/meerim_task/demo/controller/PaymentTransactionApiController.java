@@ -18,7 +18,7 @@ public class PaymentTransactionApiController {
     private final PaymentTransactionFacade paymentTransactionFacade;
 
     @PostMapping("/doCreate")
-    public PaymentTransactionDto create(@PathVariable Long userId, @RequestBody @Valid CreatePaymentTransactionRequestDto request) throws NotFoundException {
+    public PaymentTransactionDto create(@PathVariable Long userId, @RequestBody @Valid CreatePaymentTransactionRequestDto request) throws NotFoundException, ConflictException {
         return paymentTransactionFacade.create(userId, request);
     }
 

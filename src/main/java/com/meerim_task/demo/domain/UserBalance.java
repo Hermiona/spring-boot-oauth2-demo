@@ -1,5 +1,6 @@
 package com.meerim_task.demo.domain;
 
+import com.meerim_task.demo.exception.ConflictException;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,4 +19,15 @@ public class UserBalance {
 
     @Column(name = "balance", nullable = false)
     private Integer balance;
+
+    public void withdraw(Integer amount) throws ConflictException {
+        if (this.balance - amount < 0) {
+            throw new ConflictException("Cannot execute a withdraw operation. Not enough balance");
+        }
+        this.balance -= amount;
+    }
+
+    public void deposit(Integer amount) {
+        this.balance += amount;
+    }
 }

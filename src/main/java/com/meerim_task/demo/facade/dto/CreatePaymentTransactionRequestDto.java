@@ -1,12 +1,20 @@
 package com.meerim_task.demo.facade.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Value
 @RequiredArgsConstructor
 public class CreatePaymentTransactionRequestDto {
+    @NotNull
     Long userBalanceId;
+    @NotNull
     Long serviceProviderId;
+    @NotNull
+    @Positive(message = "Amount must be positive > 0")
     Integer amount;
 }

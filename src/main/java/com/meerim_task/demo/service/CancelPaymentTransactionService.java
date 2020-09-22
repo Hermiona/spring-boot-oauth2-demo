@@ -6,6 +6,7 @@ import com.meerim_task.demo.exception.ConflictException;
 import com.meerim_task.demo.property.PaymentTransactionProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -21,7 +22,9 @@ class DefaultCancelPaymentTransactionService implements CancelPaymentTransaction
     private final PaymentTransactionService paymentTransactionService;
     private final Supplier<LocalDateTime> currentDateTimeProvider = LocalDateTime::now;
     private final PaymentTransactionProperty paymentTransactionProperty;
+    private final UserBalanceService userBalanceService;
 
+    @Transactional
     @Override
     public PaymentTransaction execute(PaymentTransaction paymentTransaction) throws ConflictException {
         LocalDateTime currentDateTime = currentDateTimeProvider.get();
@@ -29,6 +32,7 @@ class DefaultCancelPaymentTransactionService implements CancelPaymentTransaction
         if (duration.compareTo(paymentTransactionProperty.getCompleteTime()) >= 0) {
             throw new ConflictException("Payment transaction cannot be canceled. The available cancel time has expired");
         }
+        userBalanceService.deposit(paymentTransaction.getUserBalance(), paymentTransaction.getAmount());
         return paymentTransactionService.cancel(new CancelPaymentTransactionRequest(paymentTransaction));
     }
 }

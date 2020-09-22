@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 
 public interface PaymentTransactionFacade {
-    PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException;
+    PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException;
 
     PaymentTransactionDto cancel(Long userId, Long parentId, CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException;
 
@@ -39,11 +39,12 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
 
     @Transactional
     @Override
-    public PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException {
+    public PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException {
         User user = userService.findById(userId);
         UserBalance userBalance = userBalanceService.findByIdAndUser(dtoRequest.getUserBalanceId(), user);
         ServiceProvider serviceProvider = serviceProviderService.findById(dtoRequest.getServiceProviderId());
         PaymentTransaction paymentTransaction = paymentTransactionService.create(new CreatePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount()));
+        userBalanceService.withdraw(userBalance, dtoRequest.getAmount());
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
     }
 
