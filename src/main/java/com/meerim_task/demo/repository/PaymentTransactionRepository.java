@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @Transactional
@@ -24,4 +25,6 @@ public interface PaymentTransactionRepository extends JpaRepository<PaymentTrans
             "and not exists (select 1 from PaymentTransaction pt2 where " +
             "pt2.parent = pt)")
     Collection<PaymentTransaction> findToBeCompleted(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
+
+    Collection<PaymentTransaction> findByParentAndStatusIn(PaymentTransaction parent, Set<StatusType> statuses);
 }

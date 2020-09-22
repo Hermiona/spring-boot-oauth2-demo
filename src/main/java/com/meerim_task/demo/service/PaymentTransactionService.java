@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Set;
 import java.util.function.Supplier;
 
 
@@ -29,6 +30,8 @@ public interface PaymentTransactionService {
     PaymentTransaction find(FindPaymentTransactionRequest request) throws NotFoundException;
 
     Collection<PaymentTransaction> getToBeCompletedTransactions(Duration duration);
+
+    boolean canBeCanceled(PaymentTransaction paymentTransaction);
 }
 
 @RequiredArgsConstructor
@@ -78,5 +81,13 @@ class DefaultPaymentTransactionService implements PaymentTransactionService {
     public Collection<PaymentTransaction> getToBeCompletedTransactions(Duration duration) {
         LocalDateTime pendingTransactionsLatestTime = currentDateTimeProvider.get().minus(duration);
         return paymentTransactionRepository.findToBeCompleted(StatusType.PENDING, pendingTransactionsLatestTime);
+    }
+
+    @Override
+    public boolean canBeCanceled(PaymentTransaction paymentTransaction) {
+        if (paymentTransaction.getStatus() != StatusType.PENDING)
+            return false;
+        Collection<PaymentTransaction> canceledOrCompletedChildren = paymentTransactionRepository.findByParentAndStatusIn(paymentTransaction, Set.of(StatusType.CANCELED, StatusType.COMPLETED));
+        return canceledOrCompletedChildren.isEmpty();
     }
 }
