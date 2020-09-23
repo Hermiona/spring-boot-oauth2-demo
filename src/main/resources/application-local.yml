@@ -5,6 +5,19 @@ spring:
     url: jdbc:postgresql://localhost:5432/testdemo
     username: postgres
     password: 123
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1010464817547-k3se62nnmccutia6dfocdi0kfl7hdsce.apps.googleusercontent.com
+            client-secret: iAQ5Im8Fin9QJlUTKNgMTu7T
+            accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+            userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+            clientAuthenticationScheme: form
+            userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+            preferTokenInfo: true
+            scope: openid,email,profile
 
 logging:
   level:
