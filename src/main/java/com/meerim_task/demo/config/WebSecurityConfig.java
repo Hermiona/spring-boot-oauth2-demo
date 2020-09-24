@@ -16,7 +16,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests(a ->
-                a.anyRequest().authenticated()
+                        a.anyRequest().permitAll()
+//                a.anyRequest().authenticated()
         )
                 .csrf().disable()
                 .oauth2Login()
