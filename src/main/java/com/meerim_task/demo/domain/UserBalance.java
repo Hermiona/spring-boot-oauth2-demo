@@ -4,6 +4,7 @@ import com.meerim_task.demo.exception.ConflictException;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -13,10 +14,12 @@ public class UserBalance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotNull
     @Column(name = "balance", nullable = false)
     private Integer balance;
 

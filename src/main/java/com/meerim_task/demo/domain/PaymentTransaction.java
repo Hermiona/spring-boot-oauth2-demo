@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,20 +18,25 @@ public class PaymentTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_balance_id")
     private UserBalance userBalance;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "service_provider_id")
     private ServiceProvider serviceProvider;
 
+    @NotNull
     @Column(name = "amount", nullable = false)
     private Integer amount;
 
+    @NotNull
     @Column(name="transaction_timestamp", nullable = false)
     private LocalDateTime transactionTimestamp;
 
+    @NotNull
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusType status;

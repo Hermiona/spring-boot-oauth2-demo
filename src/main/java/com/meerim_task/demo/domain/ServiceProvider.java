@@ -3,6 +3,7 @@ package com.meerim_task.demo.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -13,9 +14,11 @@ public class ServiceProvider implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
     @Column(name = "account_details", unique = true, nullable = false)
     private String accountDetails;
 }
