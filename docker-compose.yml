@@ -1,0 +1,50 @@
+version: '3'
+services:
+  springapp:
+    build: .
+    image: testdemo:latest
+    container_name: testdemo
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=testdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=123
+      - ACTIVEMQ_HOST=activemq
+      - REDIS_HOST=redis
+    ports:
+      - 8081:8081
+    restart: always
+    links:
+      - postgres
+      - redis
+      - activemq
+    depends_on:
+      - postgres
+      - redis
+      - activemq
+
+  redis:
+    image: redis:6.0-alpine
+
+  activemq:
+    image: rmohr/activemq:5.15.9-alpine
+
+  postgres:
+    image: postgres:12.4
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=testdb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - sample_db:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5434:5432
+    restart: always
+
+volumes:
+  sample_db: {}
