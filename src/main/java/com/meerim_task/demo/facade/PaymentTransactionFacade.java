@@ -40,9 +40,9 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
     @Transactional
     @Override
     public PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException {
-        User user = userService.findById(userId);
-        UserBalance userBalance = userBalanceService.findByIdAndUser(dtoRequest.getUserBalanceId(), user);
-        ServiceProvider serviceProvider = serviceProviderService.findById(dtoRequest.getServiceProviderId());
+        User user = userService.getById(userId);
+        UserBalance userBalance = userBalanceService.getByIdAndUser(dtoRequest.getUserBalanceId(), user);
+        ServiceProvider serviceProvider = serviceProviderService.getById(dtoRequest.getServiceProviderId());
         PaymentTransaction paymentTransaction = paymentTransactionService.create(new CreatePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount()));
         userBalanceService.withdraw(userBalance, dtoRequest.getAmount());
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
@@ -51,9 +51,9 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
     @Transactional
     @Override
     public PaymentTransactionDto cancel(Long userId, Long parentId, CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException {
-        User user = userService.findById(userId);
-        UserBalance userBalance = userBalanceService.findByIdAndUser(dtoRequest.getUserBalanceId(), user);
-        ServiceProvider serviceProvider = serviceProviderService.findById(dtoRequest.getServiceProviderId());
+        User user = userService.getById(userId);
+        UserBalance userBalance = userBalanceService.getByIdAndUser(dtoRequest.getUserBalanceId(), user);
+        ServiceProvider serviceProvider = serviceProviderService.getById(dtoRequest.getServiceProviderId());
         PaymentTransaction paymentTransaction = paymentTransactionService.find(new FindPaymentTransactionRequest(
                 parentId,
                 userBalance,

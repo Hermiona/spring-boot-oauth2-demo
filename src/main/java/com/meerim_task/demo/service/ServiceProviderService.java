@@ -9,7 +9,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 public interface ServiceProviderService {
-    ServiceProvider findById(Long id) throws NotFoundException;
+    ServiceProvider getById(Long id) throws NotFoundException;
 }
 
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ class DefaultServiceProviderService implements ServiceProviderService {
     private final ServiceProviderRepository serviceProviderRepository;
 
     @Override
-    public ServiceProvider findById(Long id) throws NotFoundException {
+    public ServiceProvider getById(Long id) throws NotFoundException {
         return serviceProviderRepository.findById(id).orElseThrow(() -> new NotFoundException(ServiceProvider.class, Pair.of("id", id)));
     }
 }

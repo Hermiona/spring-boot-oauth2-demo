@@ -22,7 +22,7 @@ class DefaultUserFacade implements UserFacade {
     @Transactional(readOnly = true)
     @Override
     public UserDto get(Long id) throws NotFoundException {
-        User user = userService.findById(id);
+        User user = userService.getById(id);
         return userMapper.toUserDto(user);
     }
 }

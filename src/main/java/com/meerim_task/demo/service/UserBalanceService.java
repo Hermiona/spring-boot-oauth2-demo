@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 
 public interface UserBalanceService {
-    UserBalance findById(Long id) throws NotFoundException;
+    UserBalance getById(Long id) throws NotFoundException;
 
-    UserBalance findByIdAndUser(Long id, User user) throws NotFoundException;
+    UserBalance getByIdAndUser(Long id, User user) throws NotFoundException;
 
     Collection<UserBalance> search();
 
@@ -31,13 +31,13 @@ class DefaultUserBalanceService implements UserBalanceService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserBalance findById(Long id) throws NotFoundException {
+    public UserBalance getById(Long id) throws NotFoundException {
         return userBalanceRepository.findById(id).orElseThrow(() -> new NotFoundException(UserBalance.class, Pair.of("id", id)));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserBalance findByIdAndUser(Long id, User user) throws NotFoundException {
+    public UserBalance getByIdAndUser(Long id, User user) throws NotFoundException {
         return userBalanceRepository.findByIdAndUser(id, user).orElseThrow(() -> new NotFoundException(UserBalance.class, Pair.of("id", id), Pair.of("userId", user.getId())));
     }
 

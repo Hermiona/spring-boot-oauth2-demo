@@ -8,11 +8,17 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 public interface UserService {
-    User findByUsername(String username) throws NotFoundException;
+    User getByUsername(String username) throws NotFoundException;
 
-    User findById(Long id) throws NotFoundException;
+    Optional<User> findByUsername(String username);
+
+    User getById(Long id) throws NotFoundException;
+
+    User add(User user);
 }
 
 @RequiredArgsConstructor
@@ -22,13 +28,25 @@ class DefaultUserService implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public User findByUsername(String username) throws NotFoundException {
+    public User getByUsername(String username) throws NotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(User.class, Pair.of("username", username)));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public User findById(Long id) throws NotFoundException {
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public User getById(Long id) throws NotFoundException {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(User.class, Pair.of("id", id)));
+    }
+
+    @Transactional
+    @Override
+    public User add(User user) {
+        return userRepository.save(user);
     }
 }
