@@ -1,22 +1,22 @@
 package com.meerim_task.demo.facade;
 
+import com.meerim_task.demo.controller.dto.*;
 import com.meerim_task.demo.domain.*;
 import com.meerim_task.demo.domain.request.CompletePaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.CreatePaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.FindPaymentTransactionRequest;
 import com.meerim_task.demo.exception.ConflictException;
 import com.meerim_task.demo.exception.NotFoundException;
-import com.meerim_task.demo.controller.dto.CancelPaymentTransactionRequestDto;
-import com.meerim_task.demo.controller.dto.CreatePaymentTransactionRequestDto;
-import com.meerim_task.demo.controller.dto.PaymentTransactionDto;
 import com.meerim_task.demo.mapper.PaymentTransactionMapper;
 import com.meerim_task.demo.property.PaymentTransactionProperty;
 import com.meerim_task.demo.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jms.Queue;
 import java.util.Collection;
 
 public interface PaymentTransactionFacade {
@@ -36,6 +36,8 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
     private final PaymentTransactionMapper paymentTransactionMapper;
     private final CancelPaymentTransactionService cancelPaymentTransactionService;
     private final PaymentTransactionProperty paymentTransactionProperty;
+    private final JmsMessagingTemplate jmsMessagingTemplate;
+    private final Queue queue;
 
     @Transactional
     @Override
@@ -45,6 +47,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
         ServiceProvider serviceProvider = serviceProviderService.getById(dtoRequest.getServiceProviderId());
         PaymentTransaction paymentTransaction = paymentTransactionService.create(new CreatePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount()));
         userBalanceService.withdraw(userBalance, dtoRequest.getAmount());
+        jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(PaymentTransactionEventType.CREATED));
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
     }
 
@@ -61,6 +64,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
                 StatusType.PENDING
         ));
         PaymentTransaction canceledPaymentTransaction = cancelPaymentTransactionService.execute(paymentTransaction);
+        jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(PaymentTransactionEventType.CANCELED));
         return paymentTransactionMapper.toPaymentTransactionDto(canceledPaymentTransaction);
     }
 

@@ -2,6 +2,7 @@ package com.meerim_task.demo.service;
 
 import com.meerim_task.demo.domain.PaymentTransaction;
 import com.meerim_task.demo.domain.StatusType;
+import com.meerim_task.demo.domain.projection.ServiceProviderTransactionsView;
 import com.meerim_task.demo.domain.request.CancelPaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.CompletePaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.CreatePaymentTransactionRequest;
@@ -32,6 +33,8 @@ public interface PaymentTransactionService {
     Collection<PaymentTransaction> getToBeCompletedTransactions(Duration duration);
 
     boolean canBeCanceled(PaymentTransaction paymentTransaction);
+
+    Collection<ServiceProviderTransactionsView> computeServiceProviderTransactions();
 }
 
 @RequiredArgsConstructor
@@ -89,5 +92,12 @@ class DefaultPaymentTransactionService implements PaymentTransactionService {
             return false;
         Collection<PaymentTransaction> canceledOrCompletedChildren = paymentTransactionRepository.findByParentAndStatusIn(paymentTransaction, Set.of(StatusType.CANCELED, StatusType.COMPLETED));
         return canceledOrCompletedChildren.isEmpty();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Collection<ServiceProviderTransactionsView> computeServiceProviderTransactions() {
+        var minus1DayDatetime = currentDateTimeProvider.get().minusDays(1);
+        return paymentTransactionRepository.computeServiceProviderTransactionsView(StatusType.COMPLETED, minus1DayDatetime);
     }
 }

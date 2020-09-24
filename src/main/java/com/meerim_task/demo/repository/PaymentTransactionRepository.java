@@ -4,6 +4,7 @@ import com.meerim_task.demo.domain.PaymentTransaction;
 import com.meerim_task.demo.domain.ServiceProvider;
 import com.meerim_task.demo.domain.StatusType;
 import com.meerim_task.demo.domain.UserBalance;
+import com.meerim_task.demo.domain.projection.ServiceProviderTransactionsView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +28,8 @@ public interface PaymentTransactionRepository extends JpaRepository<PaymentTrans
     Collection<PaymentTransaction> findByStatusAndTimestampBeforeAndNotExistsChildren(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
 
     Collection<PaymentTransaction> findByParentAndStatusIn(PaymentTransaction parent, Set<StatusType> statuses);
+
+    @Query(value = "select new com.meerim_task.demo.domain.projection.ServiceProviderTransactionsView(pt.serviceProvider, sum(pt.amount), count(pt.id) ) from PaymentTransaction pt " +
+            "where pt.status= :status and pt.transactionTimestamp>= :timestamp group by pt.serviceProvider")
+    Collection<ServiceProviderTransactionsView> computeServiceProviderTransactionsView(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
 }
