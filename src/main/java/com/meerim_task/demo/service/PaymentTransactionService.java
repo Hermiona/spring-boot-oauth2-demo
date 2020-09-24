@@ -1,8 +1,8 @@
 package com.meerim_task.demo.service;
 
 import com.meerim_task.demo.domain.PaymentTransaction;
+import com.meerim_task.demo.domain.ServiceProvider;
 import com.meerim_task.demo.domain.StatusType;
-import com.meerim_task.demo.domain.projection.ServiceProviderTransactionsView;
 import com.meerim_task.demo.domain.request.CancelPaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.CompletePaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.CreatePaymentTransactionRequest;
@@ -34,7 +34,8 @@ public interface PaymentTransactionService {
 
     boolean canBeCanceled(PaymentTransaction paymentTransaction);
 
-    Collection<ServiceProviderTransactionsView> computeServiceProviderTransactions();
+    PaymentTransaction getByIdAndServiceProvider(Long id, ServiceProvider serviceProvider) throws NotFoundException;
+
 }
 
 @RequiredArgsConstructor
@@ -94,10 +95,11 @@ class DefaultPaymentTransactionService implements PaymentTransactionService {
         return canceledOrCompletedChildren.isEmpty();
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public Collection<ServiceProviderTransactionsView> computeServiceProviderTransactions() {
-        var minus1DayDatetime = currentDateTimeProvider.get().minusDays(1);
-        return paymentTransactionRepository.computeServiceProviderTransactionsView(StatusType.COMPLETED, minus1DayDatetime);
+    public PaymentTransaction getByIdAndServiceProvider(Long id, ServiceProvider serviceProvider) throws NotFoundException {
+        return paymentTransactionRepository.findByIdAndServiceProvider(id, serviceProvider).orElseThrow(() -> new NotFoundException(PaymentTransaction.class,
+                Pair.of("id", id),
+                Pair.of("serviceProvider", serviceProvider.getId())
+        ));
     }
 }

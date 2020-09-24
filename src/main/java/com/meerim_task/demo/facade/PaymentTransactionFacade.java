@@ -7,6 +7,7 @@ import com.meerim_task.demo.domain.request.CreatePaymentTransactionRequest;
 import com.meerim_task.demo.domain.request.FindPaymentTransactionRequest;
 import com.meerim_task.demo.exception.ConflictException;
 import com.meerim_task.demo.exception.NotFoundException;
+import com.meerim_task.demo.jms.dto.PaymentTransactionEventMessage;
 import com.meerim_task.demo.mapper.PaymentTransactionMapper;
 import com.meerim_task.demo.property.PaymentTransactionProperty;
 import com.meerim_task.demo.service.*;
@@ -47,7 +48,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
         ServiceProvider serviceProvider = serviceProviderService.getById(dtoRequest.getServiceProviderId());
         PaymentTransaction paymentTransaction = paymentTransactionService.create(new CreatePaymentTransactionRequest(userBalance, serviceProvider, dtoRequest.getAmount()));
         userBalanceService.withdraw(userBalance, dtoRequest.getAmount());
-        jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(PaymentTransactionEventType.CREATED));
+        jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(paymentTransaction.getId(), serviceProvider.getId()));
         return paymentTransactionMapper.toPaymentTransactionDto(paymentTransaction);
     }
 
@@ -64,7 +65,7 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
                 StatusType.PENDING
         ));
         PaymentTransaction canceledPaymentTransaction = cancelPaymentTransactionService.execute(paymentTransaction);
-        jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(PaymentTransactionEventType.CANCELED));
+        jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(paymentTransaction.getId(), serviceProvider.getId()));
         return paymentTransactionMapper.toPaymentTransactionDto(canceledPaymentTransaction);
     }
 

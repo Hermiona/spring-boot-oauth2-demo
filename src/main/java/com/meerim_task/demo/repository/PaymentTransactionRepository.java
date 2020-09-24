@@ -29,7 +29,13 @@ public interface PaymentTransactionRepository extends JpaRepository<PaymentTrans
 
     Collection<PaymentTransaction> findByParentAndStatusIn(PaymentTransaction parent, Set<StatusType> statuses);
 
+    Optional<PaymentTransaction> findByIdAndServiceProvider(Long id, ServiceProvider serviceProvider);
+
     @Query(value = "select new com.meerim_task.demo.domain.projection.ServiceProviderTransactionsView(pt.serviceProvider, sum(pt.amount), count(pt.id) ) from PaymentTransaction pt " +
             "where pt.status= :status and pt.transactionTimestamp>= :timestamp group by pt.serviceProvider")
-    Collection<ServiceProviderTransactionsView> computeServiceProviderTransactionsView(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
+    Collection<ServiceProviderTransactionsView> computeAllServiceProvidersTransactionsView(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp);
+
+    @Query(value = "select new com.meerim_task.demo.domain.projection.ServiceProviderTransactionsView(pt.serviceProvider, sum(pt.amount), count(pt.id) ) from PaymentTransaction pt " +
+            "where pt.status= :status and pt.transactionTimestamp>= :timestamp and pt.serviceProvider= :serviceProvider group by pt.serviceProvider")
+    ServiceProviderTransactionsView getServiceProviderTransactionsView(@Param("status") StatusType status, @Param("timestamp") LocalDateTime timestamp, @Param("serviceProvider") ServiceProvider serviceProvider);
 }
