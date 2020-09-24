@@ -27,12 +27,15 @@ services:
 
   redis:
     image: redis:6.0-alpine
+    container_name: redis-demo
 
   activemq:
     image: rmohr/activemq:5.15.9-alpine
+    container_name: activemq-demo
 
   postgres:
     image: postgres:12.4
+    container_name: postgres-demo
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123
