@@ -6,6 +6,9 @@ import lombok.Value;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+/*
+    Из требований отсуствует реквизит провайдера (поставщика) услуг
+ */
 @Value
 @RequiredArgsConstructor
 public class CreatePaymentTransactionRequestDto {

@@ -13,8 +13,10 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final OidcUserService customOidcUserService;
 
+    /* Конфигурация безопасности: на все методы открыт доступ без авторизации */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // permit all - ?
         http.authorizeRequests(a ->
                         a.anyRequest().permitAll()
 //                a.anyRequest().authenticated()

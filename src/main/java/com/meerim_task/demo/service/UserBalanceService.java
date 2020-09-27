@@ -47,6 +47,7 @@ class DefaultUserBalanceService implements UserBalanceService {
         return userBalanceRepository.findAll();
     }
 
+    /* Также сама cписание со счета должна была быть транзакцией, атомарность операции не соблюдена */
     @Transactional
     @Override
     public UserBalance withdraw(UserBalance userBalance, Integer amount) throws ConflictException {
@@ -54,6 +55,7 @@ class DefaultUserBalanceService implements UserBalanceService {
         return userBalanceRepository.save(userBalance);
     }
 
+    /* Пополнение счета, само является транзакцией, безопасность от мультипоточности не соблюдена */
     @Transactional
     @Override
     public UserBalance deposit(UserBalance userBalance, Integer amount) {
