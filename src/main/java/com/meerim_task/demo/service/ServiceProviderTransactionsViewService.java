@@ -32,6 +32,9 @@ class DefaultServiceProviderTransactionsViewService implements ServiceProviderTr
     private final Supplier<LocalDateTime> currentDateTimeProvider = LocalDateTime::now;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    /*
+        "За день" - не предыдущий день + текущий, а за сегодняшний день.
+     */
     @Transactional(readOnly = true)
     @Override
     @Cacheable(value = "serviceProvidersTransactions", key = "#serviceProvider.id")

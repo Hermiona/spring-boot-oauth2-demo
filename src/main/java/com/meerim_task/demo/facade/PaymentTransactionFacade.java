@@ -20,9 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.jms.Queue;
 import java.util.Collection;
 
+/* Важные интерфейсы должны иметь документацию на все методы */
 public interface PaymentTransactionFacade {
+    /* Почему объект Long а не примитив, type casting issue может уйти корнями на другие методы */
     PaymentTransactionDto create(Long userId, CreatePaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException;
 
+    /* Почему объект Long а не примитив, type casting issue может уйти корнями на другие методы */
     PaymentTransactionDto cancel(Long userId, Long parentId, CancelPaymentTransactionRequestDto dtoRequest) throws NotFoundException, ConflictException;
 
 }
@@ -64,6 +67,10 @@ class DefaultPaymentTransactionFacade implements PaymentTransactionFacade {
                 serviceProvider,
                 StatusType.PENDING
         ));
+        /*
+            Почему execute на cancel ? Должен был быть один обработчик всех транзакций., который может делать все операции в зависимости от вида
+            То есть execute не только на cancel но и на проводку, отмену, и чек статуса
+         */
         PaymentTransaction canceledPaymentTransaction = cancelPaymentTransactionService.execute(paymentTransaction);
         jmsMessagingTemplate.convertAndSend(queue, new PaymentTransactionEventMessage(paymentTransaction.getId(), serviceProvider.getId()));
         return paymentTransactionMapper.toPaymentTransactionDto(canceledPaymentTransaction);

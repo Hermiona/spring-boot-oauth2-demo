@@ -17,11 +17,13 @@ import javax.validation.Valid;
 public class PaymentTransactionApiController {
     private final PaymentTransactionFacade paymentTransactionFacade;
 
+    /* Rest API документация отсутствует */
     @PostMapping("/doCreate")
     public PaymentTransactionDto create(@PathVariable Long userId, @RequestBody @Valid CreatePaymentTransactionRequestDto request) throws NotFoundException, ConflictException {
         return paymentTransactionFacade.create(userId, request);
     }
 
+    /* Rest API документация отсутствует */
     @PostMapping("{parentId}/doCancel")
     public PaymentTransactionDto cancel(@PathVariable Long userId, @PathVariable Long parentId, @RequestBody @Valid CancelPaymentTransactionRequestDto request) throws NotFoundException, ConflictException {
         return paymentTransactionFacade.cancel(userId, parentId, request);

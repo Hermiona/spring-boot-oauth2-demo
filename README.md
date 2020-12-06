@@ -37,3 +37,21 @@ cat ./init.sql | docker exec -i postgres-demo psql -U postgres -d testdb
 ### Get service provider's sum and count of successful payment transactions
 #### localhost:8081/api/service_providers_transactions/2
 #### GET request
+
+
+## Review Notes
+- Отсуствие тестов на критические бизнес функции как оплата, проводка
+- Безопасность не настроен должным образом. Нет конфигурации для Auth Server и Resource Server.
+Отсутствует привилегии на 
+    - Создание пользователя
+    - Чтение ServiceProviderTransactionView
+- Неправильно понят использование oauth2. Об использование Open ID (Google Auth Service) в требованиях не было.
+- Ожидалось State Machine (Flow) для статусов транзакции.
+- Неправильное использование Facade. Основное назначение Facade
+    >Provide a unified interface to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem easier to use.
+- Проектирование транзакций неверное, отсуствуте разделение платежного поручения и транзакции по ней (create, cancel).
+  Подход parent-child на транзакции хороший подход, но не все детали платежного поручения может проецироваться на children.
+  Возможно даже в некоторых кейсах это лучшее решение.
+- Отсутсвует счет самого поставщика услуги
+- Бухгалтерских учет, Credit/Debit отсутсвует.
+- Не разделен поставщик и его услуги.

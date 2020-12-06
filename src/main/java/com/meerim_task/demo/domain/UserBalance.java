@@ -23,6 +23,7 @@ public class UserBalance {
     @Column(name = "balance", nullable = false)
     private Integer balance;
 
+    /* Атомарность операции ?, здесь или уровнем выше */
     public void withdraw(Integer amount) throws ConflictException {
         if (this.balance - amount < 0) {
             throw new ConflictException("Cannot execute a withdraw operation. Not enough balance");
@@ -30,6 +31,7 @@ public class UserBalance {
         this.balance -= amount;
     }
 
+    /* Атомарность операции ?, здесь или уровнем выше*/
     public void deposit(Integer amount) {
         this.balance += amount;
     }

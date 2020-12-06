@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserBalanceApiController {
     private final UserBalanceFacade userBalanceFacade;
 
+    /* Rest API документация отсутствует */
     @GetMapping
     public PageResponseDto<UserBalanceSimplifiedDto> search() {
+        // Как получить из этого же поиска вторую страницу?
         return userBalanceFacade.search();
     }
+
+    /* User Management создание пользователя отсутсвует */
 }

@@ -10,6 +10,7 @@ import com.meerim_task.demo.service.ServiceProviderTransactionsViewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/* Main API need docs as well*/
 public interface ServiceProviderTransactionsViewFacade {
     ServiceProviderTransactionsViewDto get(Long serviceProviderId) throws NotFoundException;
 }
