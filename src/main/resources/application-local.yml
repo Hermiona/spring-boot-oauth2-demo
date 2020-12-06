@@ -11,7 +11,7 @@ spring:
         registration:
           google:
             client-id: 1010464817547-k3se62nnmccutia6dfocdi0kfl7hdsce.apps.googleusercontent.com
-            client-secret: iAQ5Im8Fin9QJlUTKNgMTu7T
+            client-secret: 123456
             accessTokenUri: https://www.googleapis.com/oauth2/v4/token
             userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
             clientAuthenticationScheme: form
